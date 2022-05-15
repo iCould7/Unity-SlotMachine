@@ -1,5 +1,6 @@
 ﻿using System;
 using ICouldGames.SlotMachine.Settings;
+using ICouldGames.SlotMachine.Settings.Constants;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -12,7 +13,7 @@ namespace ICouldGames.Build.Preprocess
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            var slotMachineSettings = AssetDatabase.LoadAssetAtPath<SlotMachineSettings>(SlotMachineSettings.FILE_PATH);
+            var slotMachineSettings = AssetDatabase.LoadAssetAtPath<SlotMachineSettings>(SlotMachineSettingsConstants.MAIN_SETTINGS_FILE_PATH);
 
             try
             {

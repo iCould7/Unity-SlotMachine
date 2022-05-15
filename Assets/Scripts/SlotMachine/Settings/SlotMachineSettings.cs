@@ -5,13 +5,11 @@ using UnityEngine;
 
 namespace ICouldGames.SlotMachine.Settings
 {
-    // Uncomment the line below if you want to Create a new scriptable object. DON'T FORGET TO UPDATE FILE_PATH FIELD!!
+    // Uncomment the line below if you want to Create a new scriptable object.
     // [CreateAssetMenu(fileName = "SlotMachineSettings", menuName = "SlotMachine/Settings", order = 1)]
     public class SlotMachineSettings : ScriptableObject
     {
         [SerializeField] private List<SpinOutcomeInfo> spinOutcomes;
-
-        public const string FILE_PATH = "Assets/ScriptableObjects/SlotMachine/SlotMachineSettings.asset";
 
         public void Validate()
         {
