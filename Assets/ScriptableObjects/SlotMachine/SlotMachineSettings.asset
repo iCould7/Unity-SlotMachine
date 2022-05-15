@@ -12,4 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cd1fd619eb94d3e903c90082d7048d2, type: 3}
   m_Name: SlotMachineSettings
   m_EditorClassIdentifier: 
-  spinOutcomes: []
+  spinOutcomes:
+  - firstItemType: 0
+    secondItemType: 3
+    thirdItemType: 4
+    probability: 13
+  - firstItemType: 3
+    secondItemType: 3
+    thirdItemType: 1
+    probability: 13
+  - firstItemType: 2
+    secondItemType: 2
+    thirdItemType: 0
+    probability: 13
+  - firstItemType: 3
+    secondItemType: 4
+    thirdItemType: 0
+    probability: 13
+  - firstItemType: 4
+    secondItemType: 0
+    thirdItemType: 2
+    probability: 13
+  - firstItemType: 0
+    secondItemType: 0
+    thirdItemType: 0
+    probability: 9
+  - firstItemType: 4
+    secondItemType: 4
+    thirdItemType: 4
+    probability: 8
+  - firstItemType: 1
+    secondItemType: 1
+    thirdItemType: 1
+    probability: 7
+  - firstItemType: 3
+    secondItemType: 3
+    thirdItemType: 3
+    probability: 6
+  - firstItemType: 2
+    secondItemType: 2
+    thirdItemType: 2
+    probability: 5
