@@ -27,5 +27,12 @@ namespace ICouldGames.SlotMachine.Settings
                 throw new Exception("SlotMachine spin outcomes total probability must be equal to 100");
             }
         }
+
+#if UNITY_EDITOR
+        private void OnEnable()
+        {
+            Validate();
+        }
+#endif
     }
 }
