@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ICouldGames.SlotMachine.Spin.Outcome;
+using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using UnityEngine;
 
 namespace ICouldGames.SlotMachine.Settings
@@ -9,7 +10,7 @@ namespace ICouldGames.SlotMachine.Settings
     // [CreateAssetMenu(fileName = "SlotMachineSettings", menuName = "SlotMachine/Settings", order = 1)]
     public class SlotMachineSettings : ScriptableObject
     {
-        [SerializeField] private List<SpinOutcomeInfo> spinOutcomes;
+        public List<SpinOutcomeInfo> spinOutcomes;
 
         public void Validate()
         {

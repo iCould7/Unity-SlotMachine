@@ -13,43 +13,53 @@ MonoBehaviour:
   m_Name: SlotMachineSettings
   m_EditorClassIdentifier: 
   spinOutcomes:
-  - firstItemType: 0
+  - id: 1
+    firstItemType: 0
     secondItemType: 3
     thirdItemType: 4
     probability: 13
-  - firstItemType: 3
+  - id: 2
+    firstItemType: 3
     secondItemType: 3
     thirdItemType: 1
     probability: 13
-  - firstItemType: 2
+  - id: 3
+    firstItemType: 2
     secondItemType: 2
     thirdItemType: 0
     probability: 13
-  - firstItemType: 3
+  - id: 4
+    firstItemType: 3
     secondItemType: 4
     thirdItemType: 0
     probability: 13
-  - firstItemType: 4
+  - id: 5
+    firstItemType: 4
     secondItemType: 0
     thirdItemType: 2
     probability: 13
-  - firstItemType: 0
+  - id: 6
+    firstItemType: 0
     secondItemType: 0
     thirdItemType: 0
     probability: 9
-  - firstItemType: 4
+  - id: 7
+    firstItemType: 4
     secondItemType: 4
     thirdItemType: 4
     probability: 8
-  - firstItemType: 1
+  - id: 8
+    firstItemType: 1
     secondItemType: 1
     thirdItemType: 1
     probability: 7
-  - firstItemType: 3
+  - id: 9
+    firstItemType: 3
     secondItemType: 3
     thirdItemType: 3
     probability: 6
-  - firstItemType: 2
+  - id: 10
+    firstItemType: 2
     secondItemType: 2
     thirdItemType: 2
     probability: 5
