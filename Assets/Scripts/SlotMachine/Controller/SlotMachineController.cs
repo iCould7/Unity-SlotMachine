@@ -6,22 +6,34 @@ using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using ICouldGames.SlotMachine.Spin.Outcome.Periodic;
 using UnityEngine;
 
-namespace ICouldGames.SlotMachine.Spin.Controller
+namespace ICouldGames.SlotMachine.Controller
 {
-    public class SlotMachineSpinController : MonoBehaviour
+    public class SlotMachineController : MonoBehaviour
     {
+        public static SlotMachineController Instance { get; private set; }
+
         [SerializeField] private SlotMachineSettings slotMachineSettings;
 
         //TODO: Delete Debug field
         public int spinAmount = 10;
         private Dictionary<SpinOutcomeInfo, int> _resultCountOfOutcomes = new();
 
+        public bool IsReady { get; private set; } = false;
+
         private Dictionary<int, PeriodicSpinOutcomeData> _periodicOutcomeDataById = new();
         private List<DataWithDeadline<SpinOutcomeInfo>> _activeWaitingSpinInfos = new();
         private int _currentSpinNumber = 0;
 
-        private void Start()
+        private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
+
+            Instance = this;
+
             InitPeriodicData();
 
             for (int i = 0; i < spinAmount; i++)
@@ -31,6 +43,8 @@ namespace ICouldGames.SlotMachine.Spin.Controller
 
             //TODO: Delete Debug
             PrintResults();
+
+            IsReady = true;
         }
 
         //TODO: Delete Debug
