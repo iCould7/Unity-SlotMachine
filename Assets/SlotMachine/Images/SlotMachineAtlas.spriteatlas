@@ -62,35 +62,17 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: e8101dd0796e5514f8c09512090b7a2d, type: 3}
-  - {fileID: 21300000, guid: bd7a9ff0f7800c84da5b700cd0b555e9, type: 3}
-  - {fileID: 21300000, guid: 8c222532d76009e4e9b0c4c3bb4926c3, type: 3}
-  - {fileID: 21300000, guid: 16f9145298bf85a44bc779cc2af09bad, type: 3}
+  - {fileID: 21300000, guid: adc5ee01389ff9c4db79bcdf14af7e9e, type: 3}
   - {fileID: 21300000, guid: 69acd41355314ab49969ae3ff940764b, type: 3}
   - {fileID: 21300000, guid: f6bf2375b5b68ee4a8ae8730ee961cd2, type: 3}
-  - {fileID: 21300000, guid: a4286ad5e05673548971285d93fa0cf3, type: 3}
-  - {fileID: 21300000, guid: 12054c37feba2a34f896d5dc371ad80b, type: 3}
-  - {fileID: 21300000, guid: 44bf1d471fabb8c47a8cf51b252fb063, type: 3}
   - {fileID: 21300000, guid: e8f3ab09a7901064197d413cf3c879cf, type: 3}
-  - {fileID: 21300000, guid: dc57393909203044099d35c60caf7323, type: 3}
   - {fileID: 21300000, guid: c94dce5ade7a0fa4e92e07ab95d9d9f9, type: 3}
-  - {fileID: 21300000, guid: ead274fe273906e44b29ab8942ee5673, type: 3}
-  - {fileID: 21300000, guid: 8545d38f7ab1c1243aa73dd451b2b9fb, type: 3}
   m_PackedSpriteNamesToIndex:
-  - Wild_00
-  - Seven_00_blur
-  - Seven_00
-  - A_00
+  - Slot_mask
   - Slot_gradient
   - slot_window
-  - Wild_00_blur
-  - Jackpot_00
-  - Jackpot_00_blur
   - coins
-  - Bonus_00_blur
   - Slot_back
-  - Bonus_00
-  - A_00_blur
   m_RenderDataMap: {}
   m_Tag: SlotMachineAtlas
   m_IsVariant: 0
