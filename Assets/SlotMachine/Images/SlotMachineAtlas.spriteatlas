@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SlotMachineAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 3
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 47
+      m_TextureCompression: 1
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: be81ce832f1ca4444b35ae13698f1fe3, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: e8101dd0796e5514f8c09512090b7a2d, type: 3}
+  - {fileID: 21300000, guid: bd7a9ff0f7800c84da5b700cd0b555e9, type: 3}
+  - {fileID: 21300000, guid: 8c222532d76009e4e9b0c4c3bb4926c3, type: 3}
+  - {fileID: 21300000, guid: 16f9145298bf85a44bc779cc2af09bad, type: 3}
+  - {fileID: 21300000, guid: 69acd41355314ab49969ae3ff940764b, type: 3}
+  - {fileID: 21300000, guid: f6bf2375b5b68ee4a8ae8730ee961cd2, type: 3}
+  - {fileID: 21300000, guid: a4286ad5e05673548971285d93fa0cf3, type: 3}
+  - {fileID: 21300000, guid: 12054c37feba2a34f896d5dc371ad80b, type: 3}
+  - {fileID: 21300000, guid: 44bf1d471fabb8c47a8cf51b252fb063, type: 3}
+  - {fileID: 21300000, guid: e8f3ab09a7901064197d413cf3c879cf, type: 3}
+  - {fileID: 21300000, guid: dc57393909203044099d35c60caf7323, type: 3}
+  - {fileID: 21300000, guid: c94dce5ade7a0fa4e92e07ab95d9d9f9, type: 3}
+  - {fileID: 21300000, guid: ead274fe273906e44b29ab8942ee5673, type: 3}
+  - {fileID: 21300000, guid: 8545d38f7ab1c1243aa73dd451b2b9fb, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Wild_00
+  - Seven_00_blur
+  - Seven_00
+  - A_00
+  - Slot_gradient
+  - slot_window
+  - Wild_00_blur
+  - Jackpot_00
+  - Jackpot_00_blur
+  - coins
+  - Bonus_00_blur
+  - Slot_back
+  - Bonus_00
+  - A_00_blur
+  m_RenderDataMap: {}
+  m_Tag: SlotMachineAtlas
+  m_IsVariant: 0
