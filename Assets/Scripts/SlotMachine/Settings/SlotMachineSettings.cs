@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using ICouldGames.SlotMachine.Spin.Outcome;
 using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using UnityEngine;
 
 namespace ICouldGames.SlotMachine.Settings
 {
-    // Uncomment the line below if you want to Create a new scriptable object.
-    // [CreateAssetMenu(fileName = "SlotMachineSettings", menuName = "SlotMachine/Settings", order = 1)]
+    [CreateAssetMenu(fileName = "SlotMachineSettings", menuName = "SlotMachine/Settings", order = 1)]
     public class SlotMachineSettings : ScriptableObject
     {
         public List<SpinOutcomeInfo> spinOutcomes;
