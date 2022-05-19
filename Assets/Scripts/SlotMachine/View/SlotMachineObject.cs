@@ -18,9 +18,13 @@ namespace ICouldGames.SlotMachine.View
         [SerializeField] private SlotMachineColumn column3;
 
         [Header("Settings")]
+        [Range(0.5f, 500f)]
         [SerializeField] private float startingSpinSpeed;
+        [Range(0.05f, 10f)]
         [SerializeField] private float startingSpinDuration;
+        [Range(0.05f, 10f)]
         [SerializeField] private float fastSpinStopDuration;
+        [Range(0.05f, 10f)]
         [SerializeField] private float[] criticalLastSpinStopDurations;
 
         private IEnumerator Start()
