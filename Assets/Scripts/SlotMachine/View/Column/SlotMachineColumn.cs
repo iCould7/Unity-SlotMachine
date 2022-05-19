@@ -20,6 +20,11 @@ namespace ICouldGames.SlotMachine.View.Column
 
         private Queue<SlotMachineSpinItem> _activeSpinItems = new();
         private Stack<SlotMachineSpinItem> _cachedSpinItems = new();
+        private bool _firstTweenEnded = false;
+        private bool _secondTweenEnded = false;
+        private int _resultOffsetFromMid = 0;
+        private int _nextSpawnOffsetFromMid = 0;
+        private ColumnSpinSettings _spinSettings;
 
         private IEnumerator Start()
         {
@@ -52,32 +57,33 @@ namespace ICouldGames.SlotMachine.View.Column
 
         public IEnumerator Spin(ColumnSpinSettings spinSettings)
         {
+            _spinSettings = spinSettings;
             var itemSpacingVector = _activeSpinItems.ElementAt(0).transform.position - _activeSpinItems.ElementAt(1).transform.position;
             NormalizeStartingSpeed(ref spinSettings, itemSpacingVector.magnitude);
 
-            // First spin
-            var firstTweenEnded = false;
+            // First tween
             var firstTweenEndPos = spinItemsMoveContainer.position
                                    + (spinSettings.StartingSpinSpeed * spinSettings.StartingSpinDuration * itemSpacingVector.normalized);
             tweenReachTransform.position = firstTweenEndPos;
             LeanTween.move(spinItemsMoveContainer.gameObject, tweenReachTransform, spinSettings.StartingSpinDuration)
                 .setEase(LeanTweenType.linear)
                 .setOnUpdate(CheckSpawns)
-                .setOnComplete(() => firstTweenEnded = true);
-            yield return new WaitUntil(() => firstTweenEnded);
+                .setOnComplete(() => _firstTweenEnded = true);
+            yield return new WaitUntil(() => _firstTweenEnded);
 
-            // Second spin
-            var secondTweenEnded = false;
+            // Second tween
             var tweenDistanceInSpacing = Mathf.FloorToInt(spinSettings.StartingSpinSpeed * spinSettings.SpinStopDuration /
-                                                     2f / itemSpacingVector.magnitude);
+                                                          2f / itemSpacingVector.magnitude);
             tweenDistanceInSpacing = Mathf.Clamp(tweenDistanceInSpacing, 2, int.MaxValue);
+            _resultOffsetFromMid = tweenDistanceInSpacing;
+            CheckActiveItemsForResult(itemSpacingVector);
             var tweenDistanceVector = tweenDistanceInSpacing * itemSpacingVector;
             tweenReachTransform.position += tweenDistanceVector;
             LeanTween.move(spinItemsMoveContainer.gameObject, tweenReachTransform, spinSettings.SpinStopDuration)
                 .setEase(spinSettings.SlowingTweenType)
                 .setOnUpdate(CheckSpawns)
-                .setOnComplete(() => secondTweenEnded = true);
-            yield return new WaitUntil(() => secondTweenEnded);
+                .setOnComplete(() => _secondTweenEnded = true);
+            yield return new WaitUntil(() => _secondTweenEnded);
 
             Reset();
         }
@@ -109,8 +115,13 @@ namespace ICouldGames.SlotMachine.View.Column
                 var lastCachedItem = _cachedSpinItems.Peek();
                 var lastCachedPos = lastCachedItem.transform.position;
                 var despawnPos = despawnBorderPoint.position;
-                firstSpawnPoint = lastCachedPos + Mathf.Ceil(Vector3.Distance(lastCachedPos, despawnPos) / itemSpacingVector.magnitude) * (-itemSpacingVector);
+                var offsetFromLastCachedPointInSpacing = Mathf.CeilToInt(Vector3.Distance(lastCachedPos, despawnPos) / itemSpacingVector.magnitude);
+                firstSpawnPoint = lastCachedPos + offsetFromLastCachedPointInSpacing * (-itemSpacingVector);
                 isSpawnNeeded = true;
+                if (_firstTweenEnded)
+                {
+                    _nextSpawnOffsetFromMid += offsetFromLastCachedPointInSpacing - 1;
+                }
             }
             else
             {
@@ -134,6 +145,51 @@ namespace ICouldGames.SlotMachine.View.Column
                     spawnItem.transform.position = itemSpawnPoint;
                     _activeSpinItems.Enqueue(spawnItem);
                     itemSpawnPoint -= itemSpacingVector;
+                    if (_firstTweenEnded)
+                    {
+                        if (_resultOffsetFromMid == _nextSpawnOffsetFromMid)
+                        {
+                            spawnItem.Init(SpinItemImageProvider.Instance.GetBlurredImage(_spinSettings.ResultItemType),
+                                SpinItemImageProvider.Instance.GetCleanImage(_spinSettings.ResultItemType));
+                        }
+                        _nextSpawnOffsetFromMid++;
+                    }
+                }
+            }
+        }
+
+        private int CalculateMidOffset(SlotMachineSpinItem item, Vector3 itemSpacingVector)
+        {
+            var itemToMidVector = spawnItemsRoot.transform.position - item.transform.position;
+            var tolerance = itemSpacingVector.magnitude / 2f;
+
+            int offsetSign;
+            if (Vector3.Dot(itemToMidVector, itemSpacingVector) > 0f)
+            {
+                offsetSign = 1;
+            }
+            else
+            {
+                offsetSign = -1;
+            }
+
+            return Mathf.FloorToInt((itemToMidVector.magnitude + tolerance) / itemSpacingVector.magnitude) * offsetSign;
+        }
+
+        private void CheckActiveItemsForResult(Vector3 itemSpacingVector)
+        {
+            foreach (var spinItem in _activeSpinItems)
+            {
+                var midOffset = CalculateMidOffset(spinItem, itemSpacingVector);
+                if (midOffset == _resultOffsetFromMid)
+                {
+                    spinItem.Init(SpinItemImageProvider.Instance.GetBlurredImage(_spinSettings.ResultItemType),
+                        SpinItemImageProvider.Instance.GetCleanImage(_spinSettings.ResultItemType));
+                }
+
+                if (midOffset >= 0)
+                {
+                    _nextSpawnOffsetFromMid++;
                 }
             }
         }
@@ -168,6 +224,11 @@ namespace ICouldGames.SlotMachine.View.Column
             {
                 spinItem.transform.SetParent(spinItemsMoveContainer);
             }
+
+            _firstTweenEnded = false;
+            _secondTweenEnded = false;
+            _resultOffsetFromMid = 0;
+            _nextSpawnOffsetFromMid = 0;
         }
 
         private bool IsDependenciesReady()

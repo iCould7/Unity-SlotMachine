@@ -115,6 +115,10 @@ namespace ICouldGames.SlotMachine.Controller
                 _resultCountOfOutcomes[spinResult] = 1;
             else
                 _resultCountOfOutcomes[spinResult]++;
+
+#if UNITY_EDITOR
+            Debug.Log(spinResult);
+#endif
             return spinResult;
         }
 
