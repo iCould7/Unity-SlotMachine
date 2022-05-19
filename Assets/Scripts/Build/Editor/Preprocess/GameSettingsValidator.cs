@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace ICouldGames.Build.Preprocess
+namespace ICouldGames.Build.Editor.Preprocess
 {
     public class GameSettingsValidator : IPreprocessBuildWithReport
     {
