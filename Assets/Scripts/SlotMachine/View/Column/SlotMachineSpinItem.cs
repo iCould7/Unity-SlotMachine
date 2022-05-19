@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using ICouldGames.SlotMachine.Spin.Item;
+using UnityEngine;
 
-namespace ICouldGames.SlotMachine.View
+namespace ICouldGames.SlotMachine.View.Column
 {
     public class SlotMachineSpinItem : MonoBehaviour
     {
@@ -28,6 +29,13 @@ namespace ICouldGames.SlotMachine.View
         {
             cleanItem.gameObject.SetActive(true);
             blurredItem.gameObject.SetActive(false);
+        }
+
+        public void InitWithRandomSpinImages()
+        {
+            var randomItemType = SpinItemTypeGenerator.GetRandom();
+            Init(SpinItemImageProvider.Instance.GetBlurredImage(randomItemType),
+                SpinItemImageProvider.Instance.GetCleanImage(randomItemType));
         }
     }
 }
