@@ -12,7 +12,7 @@ namespace ICouldGames.SlotMachine.View.Column
     public class SlotMachineColumn : MonoBehaviour
     {
         [SerializeField] private Transform spawnBorderPoint;
-        [SerializeField] private Transform despawnBorderPoint;
+        [SerializeField] private Transform despawnBorderPoint; // If Springy ease tweens make items disappear, position despawnBorderPoint a little bit lower
         [SerializeField] private Transform spinItemsMoveContainer;
         [SerializeField] private Transform spawnItemsRoot;
         [SerializeField] private Transform tweenReachTransform;
@@ -109,7 +109,7 @@ namespace ICouldGames.SlotMachine.View.Column
                 var lastCachedItem = _cachedSpinItems.Peek();
                 var lastCachedPos = lastCachedItem.transform.position;
                 var despawnPos = despawnBorderPoint.position;
-                firstSpawnPoint = Mathf.Ceil(Vector3.Distance(lastCachedPos, despawnPos) / itemSpacingVector.magnitude) * (-itemSpacingVector);
+                firstSpawnPoint = lastCachedPos + Mathf.Ceil(Vector3.Distance(lastCachedPos, despawnPos) / itemSpacingVector.magnitude) * (-itemSpacingVector);
                 isSpawnNeeded = true;
             }
             else

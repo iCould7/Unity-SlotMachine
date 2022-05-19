@@ -834,6 +834,10 @@ PrefabInstance:
       propertyPath: spinButton
       value: 
       objectReference: {fileID: 1178902474}
+    - target: {fileID: 5863642908251126472, guid: 54ff849ad784f2540b4cc5e34c978b78, type: 3}
+      propertyPath: startingSpinSpeed
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 7926312188907703783, guid: 54ff849ad784f2540b4cc5e34c978b78, type: 3}
       propertyPath: m_Name
       value: SlotMachine
