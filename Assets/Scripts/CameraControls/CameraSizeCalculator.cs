@@ -1,5 +1,4 @@
-﻿using System;
-using ICouldGames.ScreenData;
+﻿using ICouldGames.ScreenData;
 using UnityEngine;
 
 namespace ICouldGames.CameraControls
