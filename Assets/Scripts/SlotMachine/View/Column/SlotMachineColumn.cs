@@ -62,12 +62,17 @@ namespace ICouldGames.SlotMachine.View.Column
             NormalizeStartingSpeed(ref spinSettings, itemSpacingVector.magnitude);
 
             // First tween
+            SetBlurredEveryItem();
             var firstTweenEndPos = spinItemsMoveContainer.position
                                    + (spinSettings.StartingSpinSpeed * spinSettings.StartingSpinDuration * itemSpacingVector.normalized);
             tweenReachTransform.position = firstTweenEndPos;
             LeanTween.move(spinItemsMoveContainer.gameObject, tweenReachTransform, spinSettings.StartingSpinDuration)
                 .setEase(LeanTweenType.linear)
-                .setOnUpdate(CheckSpawns)
+                .setOnUpdate((float _) =>
+                {
+                    CheckSpawns();
+                    SetBlurredEveryItem();
+                })
                 .setOnComplete(() => _firstTweenEnded = true);
             yield return new WaitUntil(() => _firstTweenEnded);
 
@@ -81,14 +86,41 @@ namespace ICouldGames.SlotMachine.View.Column
             tweenReachTransform.position += tweenDistanceVector;
             LeanTween.move(spinItemsMoveContainer.gameObject, tweenReachTransform, spinSettings.SpinStopDuration)
                 .setEase(spinSettings.SlowingTweenType)
-                .setOnUpdate(CheckSpawns)
+                .setOnUpdate((float _) => CheckSpawns())
                 .setOnComplete(() => _secondTweenEnded = true);
+            LeanTween.value(1f, 0f, spinSettings.SpinStopDuration)
+                .setOnUpdate((x) =>
+                {
+                    foreach (var item in _activeSpinItems)
+                    {
+                        item.ActivateMixedMode();
+                        item.SetTransitionAlphas(x);
+                    }
+                })
+                .setOnComplete(() =>
+                {
+                    foreach (var item in _activeSpinItems)
+                    {
+                        item.ResetAlphas();
+                        item.ActivateCleanMode();
+                    }
+                })
+                .setEase(spinSettings.SlowingTweenType);
+
             yield return new WaitUntil(() => _secondTweenEnded);
 
             Reset();
         }
 
-        private void CheckSpawns(float tweenMoved)
+        private void SetBlurredEveryItem()
+        {
+            foreach (var item in _activeSpinItems)
+            {
+                item.ActivateBlurredMode();
+            }
+        }
+
+        private void CheckSpawns()
         {
             var itemSpacingVector = _activeSpinItems.ElementAt(0).transform.position - _activeSpinItems.ElementAt(1).transform.position;
 

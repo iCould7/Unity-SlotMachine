@@ -31,6 +31,34 @@ namespace ICouldGames.SlotMachine.View.Column
             blurredItem.gameObject.SetActive(false);
         }
 
+        public void ActivateMixedMode()
+        {
+            cleanItem.gameObject.SetActive(true);
+            blurredItem.gameObject.SetActive(true);
+        }
+
+        public void SetTransitionAlphas(float blurAlpha)
+        {
+            var blurredItemColor = blurredItem.color;
+            blurredItemColor.a = blurAlpha;
+            blurredItem.color = blurredItemColor;
+
+            var cleanItemColor = cleanItem.color;
+            cleanItemColor.a = 1f - blurAlpha;
+            cleanItem.color = cleanItemColor;
+        }
+
+        public void ResetAlphas()
+        {
+            var blurredItemColor = blurredItem.color;
+            blurredItemColor.a = 1f;
+            blurredItem.color = blurredItemColor;
+
+            var cleanItemColor = cleanItem.color;
+            cleanItemColor.a = 1f;
+            cleanItem.color = cleanItemColor;
+        }
+
         public void InitWithRandomSpinImages()
         {
             var randomItemType = SpinItemTypeGenerator.GetRandom();
