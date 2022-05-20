@@ -19,6 +19,11 @@ namespace ICouldGames.CameraControls
 
         private void Start()
         {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
             ScreenOrientationChangeHandler.Instance.Listener.AddListener(CalculateSize);
             ScreenSizeChangeListener.Instance.Listener.AddListener(CalculateSize);
         }
