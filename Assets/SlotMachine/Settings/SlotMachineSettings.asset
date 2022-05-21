@@ -18,48 +18,58 @@ MonoBehaviour:
     secondItemType: 4
     thirdItemType: 5
     probability: 13
+    coinPrize: 0
   - id: 2
     firstItemType: 4
     secondItemType: 4
     thirdItemType: 2
     probability: 13
+    coinPrize: 0
   - id: 3
     firstItemType: 3
     secondItemType: 3
     thirdItemType: 1
     probability: 13
+    coinPrize: 0
   - id: 4
     firstItemType: 4
     secondItemType: 5
     thirdItemType: 1
     probability: 13
+    coinPrize: 0
   - id: 5
     firstItemType: 5
     secondItemType: 1
     thirdItemType: 3
     probability: 13
+    coinPrize: 0
   - id: 6
     firstItemType: 1
     secondItemType: 1
     thirdItemType: 1
     probability: 9
+    coinPrize: 1
   - id: 7
     firstItemType: 5
     secondItemType: 5
     thirdItemType: 5
     probability: 8
+    coinPrize: 2
   - id: 8
     firstItemType: 2
     secondItemType: 2
     thirdItemType: 2
     probability: 7
+    coinPrize: 3
   - id: 9
     firstItemType: 4
     secondItemType: 4
     thirdItemType: 4
     probability: 6
+    coinPrize: 4
   - id: 10
     firstItemType: 3
     secondItemType: 3
     thirdItemType: 3
     probability: 5
+    coinPrize: 5

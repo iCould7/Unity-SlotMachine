@@ -22,6 +22,11 @@ namespace ICouldGames.SlotMachine.Spin.Outcome.Info
         public int Probability => probability;
         public int CoinPrize => coinPrize;
 
+        public bool IsPrizeAvailable()
+        {
+            return firstItemType == secondItemType && secondItemType == thirdItemType;
+        }
+
         public void OnBeforeSerialize()
         {
         }

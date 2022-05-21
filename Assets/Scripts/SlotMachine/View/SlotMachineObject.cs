@@ -16,6 +16,7 @@ namespace ICouldGames.SlotMachine.View
         [SerializeField] private SlotMachineColumn column1;
         [SerializeField] private SlotMachineColumn column2;
         [SerializeField] private SlotMachineColumn column3;
+        [SerializeField] private ParticleSystem coinParticleSystem;
 
         [Header("Settings")]
         [Range(0.5f, 500f)]
@@ -51,6 +52,8 @@ namespace ICouldGames.SlotMachine.View
             yield return StartCoroutine(column2.Spin(GenerateSpinSettings(spinOutcome, 1)));
             yield return StartCoroutine(column3.Spin(GenerateSpinSettings(spinOutcome, 2)));
 
+            TryEmittingCoins(spinOutcome);
+
             spinButton.interactable = true;
         }
 
@@ -73,6 +76,17 @@ namespace ICouldGames.SlotMachine.View
             }
 
             return columnSpinSettings;
+        }
+
+        private void TryEmittingCoins(SpinOutcomeInfo spinOutcome)
+        {
+            const int baseParticleCount = 4;
+            const int extraParticleCoefficient = 2;
+
+            if (spinOutcome.IsPrizeAvailable())
+            {
+                coinParticleSystem.Emit(baseParticleCount + extraParticleCoefficient * spinOutcome.PrizeTier);
+            }
         }
 
         private void OnDestroy()
