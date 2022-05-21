@@ -45,7 +45,7 @@ namespace ICouldGames.SlotMachine.View
         {
             spinButton.interactable = false;
 
-            var spinOutcome = SlotMachineController.Instance.GetNextSpin();
+            var spinOutcome = SlotMachineController.Instance.GetNextSpin(true);
             spinOutcome.SpinItemTypes.Shuffle();
 
             yield return StartCoroutine(column1.Spin(GenerateSpinSettings(spinOutcome, 0)));

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ICouldGames.SlotMachine.Settings;
 using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using ICouldGames.SlotMachine.Spin.Outcome.Periodic;
@@ -19,6 +20,10 @@ namespace ICouldGames.SlotMachine.Controller
         private SpinSimulationData _mainSimData;
         private SpinSimulationData _pickabilityTestSimData;
         private Random _spinPicker;
+        private int _spinPickerSeed;
+
+        private const string RANDOM_SEED_SAVE_KEY = "slotMachine_spin_random_seed";
+        private const string LAST_SESSION_SPIN_NUMBER_SAVE_KEY = "slotMachine_last_session_spin_number";
 
         private void Awake()
         {
@@ -30,10 +35,17 @@ namespace ICouldGames.SlotMachine.Controller
 
             Instance = this;
 
-            _spinPicker = new Random();
-            InitPeriodicData();
+            Init();
 
             IsReady = true;
+        }
+
+        private void Init()
+        {
+            _spinPickerSeed = PlayerPrefs.GetInt(RANDOM_SEED_SAVE_KEY, Environment.TickCount);
+            _spinPicker = new Random(_spinPickerSeed);
+            InitPeriodicData();
+            ProcessInitialSimulationData();
         }
 
         private void InitPeriodicData()
@@ -49,15 +61,35 @@ namespace ICouldGames.SlotMachine.Controller
             _mainSimData.FetchNewArrivals();
         }
 
-        public SpinOutcomeInfo GetNextSpin()
+        private void ProcessInitialSimulationData()
+        {
+            var lastSessionSpinNumber = PlayerPrefs.GetInt(LAST_SESSION_SPIN_NUMBER_SAVE_KEY, 0);
+            for (int i = 0; i < lastSessionSpinNumber; i++)
+            {
+                GetNextSpin(false);
+            }
+        }
+
+        public SpinOutcomeInfo GetNextSpin(bool triggerSave)
         {
             int pickedIndex = GetRandomSpinIndex();
             var spinResult = _mainSimData.ActiveWaitingSpinInfos[pickedIndex].Data;
             ProcessPickedSpin(_mainSimData, pickedIndex);
 
+            if (_mainSimData.CurrentSpinNumber == 0)
+            {
+                _spinPickerSeed = Environment.TickCount;
+            }
+
+            if(triggerSave)
+            {
+                Save();
+            }
+
 #if UNITY_EDITOR
             Debug.Log(spinResult);
 #endif
+
             return spinResult;
         }
 
@@ -122,6 +154,13 @@ namespace ICouldGames.SlotMachine.Controller
                     }
                 }
             }
+        }
+
+        public void Save()
+        {
+            PlayerPrefs.SetInt(RANDOM_SEED_SAVE_KEY, _spinPickerSeed);
+            PlayerPrefs.SetInt(LAST_SESSION_SPIN_NUMBER_SAVE_KEY, _mainSimData.CurrentSpinNumber);
+            PlayerPrefs.Save();
         }
     }
 }
