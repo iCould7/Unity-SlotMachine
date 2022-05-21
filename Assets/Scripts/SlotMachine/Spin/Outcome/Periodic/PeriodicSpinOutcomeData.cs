@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ICouldGames.SlotMachine.Spin.Outcome.Info;
 
 namespace ICouldGames.SlotMachine.Spin.Outcome.Periodic
@@ -11,7 +12,7 @@ namespace ICouldGames.SlotMachine.Spin.Outcome.Periodic
         private int _lastDeadline = 0;
         private int _lastPeriod = 0;
 
-        public SpinOutcomeInfo SpinOutcomeInfo { get; }
+        public SpinOutcomeInfo SpinOutcomeInfo { get; private set; }
 
         public PeriodicSpinOutcomeData(SpinOutcomeInfo outcomeInfo)
         {
@@ -74,6 +75,20 @@ namespace ICouldGames.SlotMachine.Spin.Outcome.Periodic
             var shortPeriodCount = probability - longPeriodCount;
             _remainingCountOfPeriods[_shortPeriod] = shortPeriodCount;
             _remainingCountOfPeriods[_longPeriod] = longPeriodCount;
+        }
+
+        public void Copy(PeriodicSpinOutcomeData copyData)
+        {
+            foreach (var key in _remainingCountOfPeriods.Keys.ToList())
+            {
+                _remainingCountOfPeriods[key] = copyData._remainingCountOfPeriods[key];
+            }
+
+            _shortPeriod = copyData._shortPeriod;
+            _longPeriod = copyData._longPeriod;
+            _lastDeadline = copyData._lastDeadline;
+            _lastPeriod = copyData._lastPeriod;
+            SpinOutcomeInfo = copyData.SpinOutcomeInfo;
         }
     }
 }

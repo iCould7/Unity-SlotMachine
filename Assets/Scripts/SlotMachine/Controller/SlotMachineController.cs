@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ICouldGames.Deadline;
 using ICouldGames.SlotMachine.Settings;
 using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using ICouldGames.SlotMachine.Spin.Outcome.Periodic;
+using ICouldGames.SlotMachine.Spin.Simulation;
 using UnityEngine;
+using Random = System.Random;
 
 namespace ICouldGames.SlotMachine.Controller
 {
@@ -20,9 +21,9 @@ namespace ICouldGames.SlotMachine.Controller
 
         public bool IsReady { get; private set; } = false;
 
-        private Dictionary<int, PeriodicSpinOutcomeData> _periodicOutcomeDataById = new();
-        private List<DataWithDeadline<SpinOutcomeInfo>> _activeWaitingSpinInfos = new();
-        private int _currentSpinNumber = 0;
+        private SpinSimulationData _mainSimData;
+        private SpinSimulationData _pickabilityTestSimData;
+        private Random _spinPicker;
 
         private void Awake()
         {
@@ -34,14 +35,14 @@ namespace ICouldGames.SlotMachine.Controller
 
             Instance = this;
 
+            _spinPicker = new Random();
             InitPeriodicData();
 
-            for (int i = 0; i < spinAmount; i++)
-            {
-                GetNextSpin();
-            }
-
             //TODO: Delete Debug
+             for (int i = 0; i < spinAmount; i++)
+             {
+                 GetNextSpin();
+             }
             PrintResults();
 
             IsReady = true;
@@ -58,57 +59,23 @@ namespace ICouldGames.SlotMachine.Controller
 
         private void InitPeriodicData()
         {
+            _mainSimData = new SpinSimulationData();
+            _pickabilityTestSimData = new SpinSimulationData();
             foreach (var outcomeInfo in slotMachineSettings.spinOutcomes)
             {
-                _periodicOutcomeDataById[outcomeInfo.Id] = new PeriodicSpinOutcomeData(outcomeInfo);
+                _mainSimData.PeriodicOutcomeDataList.Add(new PeriodicSpinOutcomeData(outcomeInfo));
+                _pickabilityTestSimData.PeriodicOutcomeDataList.Add(new PeriodicSpinOutcomeData(outcomeInfo));
             }
 
-            FetchNewArrivals();
-        }
-
-        private void FetchNewArrivals()
-        {
-            foreach (var periodicOutcomeData in _periodicOutcomeDataById.Values)
-            {
-                if (periodicOutcomeData.IsNextOutcomeReady(_currentSpinNumber))
-                {
-                    //TODO: Object pooling needed for DataWithDeadline
-                    var spinInfoWithDeadline = new DataWithDeadline<SpinOutcomeInfo>(periodicOutcomeData.SpinOutcomeInfo,
-                        periodicOutcomeData.GetNextDeadline());
-                    _activeWaitingSpinInfos.Add(spinInfoWithDeadline);
-                }
-            }
-
-            _activeWaitingSpinInfos.Sort();
+            _mainSimData.FetchNewArrivals();
         }
 
         //TODO: Too predictable, add randomness
         public SpinOutcomeInfo GetNextSpin()
         {
-            if (!_activeWaitingSpinInfos.Any())
-            {
-                foreach (var periodicOutcomeData in _periodicOutcomeDataById.Values)
-                {
-                    if (periodicOutcomeData.IsShorterPeriodAvailable())
-                    {
-                        periodicOutcomeData.SwapWithLowerPeriod();
-                        FetchNewArrivals();
-                        break;
-                    }
-                }
-            }
-
-            var spinResult = _activeWaitingSpinInfos[0].Data;
-            //TODO: Don't use Remove on lists, use indexes if possible
-            _activeWaitingSpinInfos.RemoveAt(0);
-
-            _currentSpinNumber++;
-            if (_currentSpinNumber == 100)
-            {
-                Reset();
-            }
-
-            FetchNewArrivals();
+            int pickedIndex = GetRandomSpinIndex();
+            var spinResult = _mainSimData.ActiveWaitingSpinInfos[pickedIndex].Data;
+            ProcessPickedSpin(_mainSimData, pickedIndex);
 
             //TODO: Delete Debug line
             if (!_resultCountOfOutcomes.ContainsKey(spinResult))
@@ -117,17 +84,71 @@ namespace ICouldGames.SlotMachine.Controller
                 _resultCountOfOutcomes[spinResult]++;
 
 #if UNITY_EDITOR
-            Debug.Log(spinResult);
+            //Debug.Log(spinResult);
 #endif
             return spinResult;
         }
 
-        private void Reset()
+        private int GetRandomSpinIndex()
         {
-            _currentSpinNumber = 0;
-            foreach (var periodicOutcomeData in _periodicOutcomeDataById.Values)
+            int lastPickableIndex = _mainSimData.ActiveWaitingSpinInfos.Count - 1;
+            while (lastPickableIndex >= 0)
             {
-                periodicOutcomeData.Reset();
+                if (IsSpinPickable(lastPickableIndex))
+                {
+                    break;
+                }
+                lastPickableIndex--;
+            }
+
+            return _spinPicker.Next(0, lastPickableIndex + 1);
+        }
+
+        private bool IsSpinPickable(int spinIndex)
+        {
+            _pickabilityTestSimData.Copy(_mainSimData);
+            ProcessPickedSpin(_pickabilityTestSimData, spinIndex);
+            if (_pickabilityTestSimData.IsAnyDeadlineFailed())
+            {
+                return false;
+            }
+
+            int earliestDeadlineIndex = 0;
+            while (_pickabilityTestSimData.CurrentSpinNumber != 0)
+            {
+                ProcessPickedSpin(_pickabilityTestSimData, earliestDeadlineIndex);
+                if (_pickabilityTestSimData.IsAnyDeadlineFailed())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void ProcessPickedSpin(SpinSimulationData simData, int pickedIndex)
+        {
+            simData.ActiveWaitingSpinInfos.RemoveAt(pickedIndex);
+
+            simData.CurrentSpinNumber++;
+            if (simData.CurrentSpinNumber == 100)
+            {
+                simData.Reset();
+            }
+
+            simData.FetchNewArrivals();
+
+            if (!simData.ActiveWaitingSpinInfos.Any())
+            {
+                foreach (var periodicOutcomeData in simData.PeriodicOutcomeDataList)
+                {
+                    if (periodicOutcomeData.IsShorterPeriodAvailable())
+                    {
+                        periodicOutcomeData.SwapWithLowerPeriod();
+                        simData.FetchNewArrivals();
+                        break;
+                    }
+                }
             }
         }
     }
