@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using ICouldGames.SlotMachine.Settings;
 using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using ICouldGames.SlotMachine.Spin.Outcome.Periodic;
@@ -14,10 +13,6 @@ namespace ICouldGames.SlotMachine.Controller
         public static SlotMachineController Instance { get; private set; }
 
         [SerializeField] private SlotMachineSettings slotMachineSettings;
-
-        //TODO: Delete Debug field
-        public int spinAmount = 10;
-        private Dictionary<SpinOutcomeInfo, int> _resultCountOfOutcomes = new();
 
         public bool IsReady { get; private set; } = false;
 
@@ -38,23 +33,7 @@ namespace ICouldGames.SlotMachine.Controller
             _spinPicker = new Random();
             InitPeriodicData();
 
-            //TODO: Delete Debug
-             for (int i = 0; i < spinAmount; i++)
-             {
-                 GetNextSpin();
-             }
-            PrintResults();
-
             IsReady = true;
-        }
-
-        //TODO: Delete Debug
-        private void PrintResults()
-        {
-            foreach (var key in _resultCountOfOutcomes.Keys)
-            {
-                Debug.Log(key + ": " + _resultCountOfOutcomes[key]);
-            }
         }
 
         private void InitPeriodicData()
@@ -70,21 +49,14 @@ namespace ICouldGames.SlotMachine.Controller
             _mainSimData.FetchNewArrivals();
         }
 
-        //TODO: Too predictable, add randomness
         public SpinOutcomeInfo GetNextSpin()
         {
             int pickedIndex = GetRandomSpinIndex();
             var spinResult = _mainSimData.ActiveWaitingSpinInfos[pickedIndex].Data;
             ProcessPickedSpin(_mainSimData, pickedIndex);
 
-            //TODO: Delete Debug line
-            if (!_resultCountOfOutcomes.ContainsKey(spinResult))
-                _resultCountOfOutcomes[spinResult] = 1;
-            else
-                _resultCountOfOutcomes[spinResult]++;
-
 #if UNITY_EDITOR
-            //Debug.Log(spinResult);
+            Debug.Log(spinResult);
 #endif
             return spinResult;
         }
