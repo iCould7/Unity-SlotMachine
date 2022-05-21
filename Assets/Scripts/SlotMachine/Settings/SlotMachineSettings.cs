@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ICouldGames.SlotMachine.Settings
 {
     [CreateAssetMenu(fileName = "SlotMachineSettings", menuName = "SlotMachine/Settings", order = 1)]
-    public class SlotMachineSettings : ScriptableObject
+    public class SlotMachineSettings : ScriptableObject, ISerializationCallbackReceiver
     {
         public List<SpinOutcomeInfo> spinOutcomes;
 
@@ -31,5 +31,31 @@ namespace ICouldGames.SlotMachine.Settings
             Validate();
         }
 #endif
+        public void OnBeforeSerialize()
+        {
+        }
+
+        public void OnAfterDeserialize()
+        {
+            var prizeAvailableOutcomes = new List<SpinOutcomeInfo>();
+            foreach (var outcomeInfo in spinOutcomes)
+            {
+                if (outcomeInfo.CoinPrize > 0)
+                {
+                    prizeAvailableOutcomes.Add(outcomeInfo);
+                }
+                else
+                {
+                    outcomeInfo.PrizeTier = 0;
+                }
+            }
+
+            prizeAvailableOutcomes.Sort((c1, c2) =>c1.CoinPrize.CompareTo(c2.CoinPrize));
+
+            for (var i = 0; i < prizeAvailableOutcomes.Count; i++)
+            {
+                prizeAvailableOutcomes[i].PrizeTier = i + 1;
+            }
+        }
     }
 }

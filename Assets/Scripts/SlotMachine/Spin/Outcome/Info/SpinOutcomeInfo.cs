@@ -13,11 +13,14 @@ namespace ICouldGames.SlotMachine.Spin.Outcome.Info
         [SerializeField] private SpinItemType secondItemType;
         [SerializeField] private SpinItemType thirdItemType;
         [SerializeField] private int probability;
+        [SerializeField] private int coinPrize;
 
         [NonSerialized] public List<SpinItemType> SpinItemTypes = new(3);
+        [NonSerialized] public int PrizeTier;
 
         public int Id => id;
         public int Probability => probability;
+        public int CoinPrize => coinPrize;
 
         public void OnBeforeSerialize()
         {
