@@ -85,7 +85,7 @@ namespace ICouldGames.SlotMachine.Controller
                 return false;
             }
 
-            int earliestDeadlineIndex = 0;
+            const int earliestDeadlineIndex = 0;
             while (_pickabilityTestSimData.CurrentSpinNumber != 0)
             {
                 ProcessPickedSpin(_pickabilityTestSimData, earliestDeadlineIndex);
