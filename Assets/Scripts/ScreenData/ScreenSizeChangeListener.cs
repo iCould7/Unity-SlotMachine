@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace ICouldGames.ScreenData
@@ -8,9 +7,9 @@ namespace ICouldGames.ScreenData
     {
         public static ScreenSizeChangeListener Instance;
 
-        private Vector2Int _lastScreenSize = new Vector2Int (0, 0);
+        private Vector2Int _lastScreenSize = new(0, 0);
 
-        public UnityEvent Listener { get; private set; } = new();
+        public UnityEvent Listener { get; } = new();
 
         private void Awake()
         {

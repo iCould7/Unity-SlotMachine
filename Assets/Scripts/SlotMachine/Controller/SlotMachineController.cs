@@ -2,8 +2,8 @@
 using System.Linq;
 using ICouldGames.Common.Interfaces.Startup;
 using ICouldGames.SlotMachine.Settings;
-using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using ICouldGames.SlotMachine.Spin.Outcome.Periodic;
+using ICouldGames.SlotMachine.Spin.Pick;
 using ICouldGames.SlotMachine.Spin.Simulation;
 using UnityEngine;
 using Random = System.Random;
@@ -42,10 +42,16 @@ namespace ICouldGames.SlotMachine.Controller
             MainSimData.FetchNewArrivals();
         }
 
-        public SpinOutcomeInfo GetNextSpin(bool triggerSave)
+        public PickedSpinData GetNextSpin(bool triggerSave)
         {
             int pickedIndex = GetRandomSpinIndex();
             var spinResult = MainSimData.ActiveWaitingSpinInfos[pickedIndex].Data;
+            var periodicData = MainSimData.PeriodicOutcomeDataList.First(x => x.SpinOutcomeInfo.Id == spinResult.Id);
+            var pickedSpinData = new PickedSpinData(spinResult);
+            pickedSpinData.ArrivalTime = MainSimData.CurrentSpinNumber;
+            pickedSpinData.ExpectedArrivalInterval = (periodicData.currentDeadline - periodicData.currentPeriod, periodicData.currentDeadline);
+            periodicData.LastPickedSpinData = pickedSpinData;
+
             ProcessPickedSpin(MainSimData, pickedIndex);
 
             if (MainSimData.CurrentSpinNumber == 0)
@@ -59,10 +65,13 @@ namespace ICouldGames.SlotMachine.Controller
             }
 
 #if UNITY_EDITOR
-            Debug.Log(spinResult);
+            if(Application.isPlaying)
+            {
+                Debug.Log(spinResult);
+            }
 #endif
 
-            return spinResult;
+            return pickedSpinData;
         }
 
         private int GetRandomSpinIndex()

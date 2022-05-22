@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using ICouldGames.Dependency.Singly;
 using ICouldGames.Extensions.System.Collections.Generic;
 using ICouldGames.SlotMachine.Controller;
@@ -8,7 +7,6 @@ using ICouldGames.SlotMachine.View.Column;
 using ICouldGames.SlotMachine.View.Column.Settings;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace ICouldGames.SlotMachine.View
 {
@@ -46,7 +44,7 @@ namespace ICouldGames.SlotMachine.View
         {
             spinButton.interactable = false;
 
-            var spinOutcome = _slotMachineController.GetNextSpin(true);
+            var spinOutcome = _slotMachineController.GetNextSpin(true).OutcomeInfo;
             spinOutcome.SpinItemTypes.Shuffle();
 
             yield return StartCoroutine(column1.Spin(GenerateSpinSettings(spinOutcome, 0)));

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ICouldGames.Dependency.Singly;
-using ICouldGames.SlotMachine.Controller;
 using ICouldGames.SlotMachine.Spin.Item;
 using ICouldGames.SlotMachine.View.Column.Settings;
 using UnityEngine;

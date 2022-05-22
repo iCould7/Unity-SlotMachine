@@ -1,9 +1,8 @@
-﻿#if UNITY_EDITOR
-
-using System;
+﻿using System;
+using ICouldGames.SlotMachine.Controller;
 using ICouldGames.SlotMachine.Settings;
 
-namespace ICouldGames.SlotMachine.Controller
+namespace ICouldGames.SlotMachine.Editor.Testing
 {
     public class EditorTestSlotMachineController : SlotMachineController
     {
@@ -22,5 +21,3 @@ namespace ICouldGames.SlotMachine.Controller
         }
     }
 }
-
-#endif

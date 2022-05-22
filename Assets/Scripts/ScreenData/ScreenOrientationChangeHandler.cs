@@ -9,7 +9,7 @@ namespace ICouldGames.ScreenData
 
         private ScreenOrientation _lastOrientation = ScreenOrientation.AutoRotation;
 
-        public UnityEvent Listener { get; private set; } = new();
+        public UnityEvent Listener { get; } = new();
 
         private void Awake()
         {
