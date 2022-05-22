@@ -19,6 +19,7 @@ namespace ICouldGames.SlotMachine.View
         [SerializeField] private ParticleSystem coinParticleSystem;
 
         [Header("Settings")]
+        [SerializeField] private float nextColumnSpinDelay;
         [Range(0.5f, 500f)]
         [SerializeField] private float startingSpinSpeed;
         [Range(0.05f, 10f)]
@@ -29,6 +30,7 @@ namespace ICouldGames.SlotMachine.View
         [SerializeField] private float[] criticalLastSpinStopDurations;
 
         private SlotMachineController _slotMachineController;
+        private WaitForSeconds _nextColumnSpinDelayWait;
 
         private void Awake()
         {
@@ -37,7 +39,13 @@ namespace ICouldGames.SlotMachine.View
 
         private void Start()
         {
+            _nextColumnSpinDelayWait = new WaitForSeconds(nextColumnSpinDelay);
             spinButton.onClick.AddListener(() => StartCoroutine(Spin()));
+        }
+
+        private void OnValidate()
+        {
+            _nextColumnSpinDelayWait = new WaitForSeconds(nextColumnSpinDelay);
         }
 
         private IEnumerator Spin()
@@ -47,8 +55,10 @@ namespace ICouldGames.SlotMachine.View
             var spinOutcome = _slotMachineController.GetNextSpin(true).OutcomeInfo;
             spinOutcome.SpinItemTypes.Shuffle();
 
-            yield return StartCoroutine(column1.Spin(GenerateSpinSettings(spinOutcome, 0)));
-            yield return StartCoroutine(column2.Spin(GenerateSpinSettings(spinOutcome, 1)));
+            StartCoroutine(column1.Spin(GenerateSpinSettings(spinOutcome, 0)));
+            yield return _nextColumnSpinDelayWait;
+            StartCoroutine(column2.Spin(GenerateSpinSettings(spinOutcome, 1)));
+            yield return _nextColumnSpinDelayWait;
             yield return StartCoroutine(column3.Spin(GenerateSpinSettings(spinOutcome, 2)));
 
             TryEmittingCoins(spinOutcome);
