@@ -24,12 +24,6 @@ namespace ICouldGames.SlotMachine.Spin.Outcome.Periodic
             Reset();
         }
 
-        public bool IsOutcomeAvailable()
-        {
-            return _remainingCountOfPeriods[_shortPeriod] > 0
-                   || _remainingCountOfPeriods[_longPeriod] > 0;
-        }
-
         public bool IsNextOutcomeReady(int spinNumber)
         {
             return _currentDeadline <= spinNumber;
