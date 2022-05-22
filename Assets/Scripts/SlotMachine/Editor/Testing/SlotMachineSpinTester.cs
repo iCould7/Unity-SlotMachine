@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using ICouldGames.SlotMachine.Settings;
 using ICouldGames.SlotMachine.Settings.Constants;
 using ICouldGames.SlotMachine.Spin.Pick;
 using UnityEditor;
-using UnityEngine;
 
 namespace ICouldGames.SlotMachine.Editor.Testing
 {
     public static class SlotMachineSpinTester
     {
-        [MenuItem("Test/SlotMachine spin test")]
-        public static void TestSpinOutcomes()
+        public static string TestSpinOutcomes(int spinCount)
         {
             var slotMachineController = new EditorTestSlotMachineController(
                 AssetDatabase.LoadAssetAtPath<SlotMachineSettings>(SlotMachineSettingsConstants.MAIN_SETTINGS_FILE_PATH));
@@ -18,8 +17,9 @@ namespace ICouldGames.SlotMachine.Editor.Testing
 
             Dictionary<int, List<PickedSpinData>> spinTestDataByOutcomeId = new();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < spinCount; i++)
             {
+                var globalPeriodCount = i / 100;
                 var pickedSpinData = slotMachineController.GetNextSpin(false);
 
                 if (!spinTestDataByOutcomeId.ContainsKey(pickedSpinData.OutcomeInfo.Id))
@@ -27,20 +27,35 @@ namespace ICouldGames.SlotMachine.Editor.Testing
                     spinTestDataByOutcomeId[pickedSpinData.OutcomeInfo.Id] = new List<PickedSpinData>();
                 }
 
+                pickedSpinData.ArrivalTime += globalPeriodCount * 100;
+                pickedSpinData.ExpectedArrivalInterval.Item1 += globalPeriodCount * 100;
+                pickedSpinData.ExpectedArrivalInterval.Item2 += globalPeriodCount * 100;
                 spinTestDataByOutcomeId[pickedSpinData.OutcomeInfo.Id].Add(pickedSpinData);
             }
 
-            // Log results into console
+            // Build result string
+            var stringBuilder = new StringBuilder();
             foreach (var spinDataList in spinTestDataByOutcomeId.Values)
             {
-                var sameOutcomeDebugString = $"{spinDataList[0].OutcomeInfo} (Total: {spinDataList.Count})\n";
+                stringBuilder.Append(spinDataList[0].OutcomeInfo);
+                stringBuilder.Append("(Total: ");
+                stringBuilder.Append(spinDataList.Count);
+                stringBuilder.Append(")\n");
                 foreach (var spinData in spinDataList)
                 {
-                    sameOutcomeDebugString += $"Expected Interval: {spinData.ExpectedArrivalInterval.Item1} - {spinData.ExpectedArrivalInterval.Item2}" +
-                                              $" / Arrival Time: {spinData.ArrivalTime}\n";
+                    stringBuilder.Append("Expected Interval: ");
+                    stringBuilder.Append(spinData.ExpectedArrivalInterval.Item1);
+                    stringBuilder.Append(" - ");
+                    stringBuilder.Append(spinData.ExpectedArrivalInterval.Item2);
+                    stringBuilder.Append(" / Arrival Time: ");
+                    stringBuilder.Append(spinData.ArrivalTime);
+                    stringBuilder.Append("\n");
                 }
-                Debug.Log(sameOutcomeDebugString);
+
+                stringBuilder.Append("\n");
             }
+
+            return stringBuilder.ToString();
         }
     }
 }
