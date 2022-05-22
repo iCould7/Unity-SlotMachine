@@ -31,7 +31,7 @@ namespace ICouldGames.SlotMachine.Spin.Simulation
         {
             foreach (var waitingSpinInfo in ActiveWaitingSpinInfos)
             {
-                if (waitingSpinInfo.Deadline < CurrentSpinNumber)
+                if (waitingSpinInfo.Deadline <= CurrentSpinNumber)
                 {
                     return true;
                 }
