@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using ICouldGames.Common.Interfaces.Startup;
 
 namespace ICouldGames.Dependency.Singly
 {
     public class SingletonContainer
     {
-        private readonly Dictionary<Type, object> _internalCcontainer = new();
+        private readonly Dictionary<Type, object> _internalContainer = new();
 
-        public void Add<T>(T singleton) where T : class
+        public void Add<T>(T singleton) where T : IInitializable
         {
-            _internalCcontainer.Add(typeof(T), singleton);
+            singleton.Init();
+            _internalContainer.Add(typeof(T), singleton);
         }
 
-        public T Get<T>()
+        public T Get<T>() where T : IInitializable
         {
-            return (T) _internalCcontainer[typeof(T)];
+            return (T) _internalContainer[typeof(T)];
         }
     }
 }

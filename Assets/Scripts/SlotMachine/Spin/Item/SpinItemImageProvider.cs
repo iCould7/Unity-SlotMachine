@@ -1,35 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using ICouldGames.Common.Interfaces.Startup;
 using UnityEngine;
 
 namespace ICouldGames.SlotMachine.Spin.Item
 {
-    public class SpinItemImageProvider : MonoBehaviour
+    public class SpinItemImageProvider : IInitializable
     {
-        public static SpinItemImageProvider Instance { get; private set; }
-
-        public bool IsReady { get; private set; } = false;
-
         private Dictionary<SpinItemType, Sprite> _blurredSpinImages = new();
         private Dictionary<SpinItemType, Sprite> _cleanSpinImages = new();
 
         private const string SPIN_ITEM_IMAGES_FOLDER = "SpinItemImages/";
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(this);
-                return;
-            }
-
-            Instance = this;
-
-            Init();
-            IsReady = true;
-        }
-
-        private void Init()
+        public void Init()
         {
             foreach (var spinItemType in Enum.GetValues(typeof(SpinItemType)))
             {

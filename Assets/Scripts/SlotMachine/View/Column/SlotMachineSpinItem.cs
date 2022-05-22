@@ -1,4 +1,5 @@
-﻿using ICouldGames.SlotMachine.Spin.Item;
+﻿using ICouldGames.Dependency.Singly;
+using ICouldGames.SlotMachine.Spin.Item;
 using UnityEngine;
 
 namespace ICouldGames.SlotMachine.View.Column
@@ -8,8 +9,11 @@ namespace ICouldGames.SlotMachine.View.Column
         [SerializeField] private SpriteRenderer blurredItem;
         [SerializeField] private SpriteRenderer cleanItem;
 
+        private SpinItemImageProvider _spinItemImageProvider;
+
         private void Awake()
         {
+            _spinItemImageProvider = SingletonProvider.Instance.Get<SpinItemImageProvider>();
             ActivateCleanMode();
         }
 
@@ -62,8 +66,7 @@ namespace ICouldGames.SlotMachine.View.Column
         public void InitWithRandomSpinImages()
         {
             var randomItemType = SpinItemTypeGenerator.GetRandom();
-            Init(SpinItemImageProvider.Instance.GetBlurredImage(randomItemType),
-                SpinItemImageProvider.Instance.GetCleanImage(randomItemType));
+            Init(_spinItemImageProvider.GetBlurredImage(randomItemType), _spinItemImageProvider.GetCleanImage(randomItemType));
         }
     }
 }

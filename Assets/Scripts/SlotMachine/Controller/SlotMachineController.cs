@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using ICouldGames.Common.Interfaces.Startup;
 using ICouldGames.SlotMachine.Settings;
 using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using ICouldGames.SlotMachine.Spin.Outcome.Periodic;
@@ -9,76 +10,47 @@ using Random = System.Random;
 
 namespace ICouldGames.SlotMachine.Controller
 {
-    public class SlotMachineController : MonoBehaviour
+    public abstract class SlotMachineController : IInitializable
     {
-        public static SlotMachineController Instance { get; private set; }
-
-        [SerializeField] private SlotMachineSettings slotMachineSettings;
-
-        public bool IsReady { get; private set; } = false;
-
-        private SpinSimulationData _mainSimData;
+        private readonly SlotMachineSettings _slotMachineSettings;
         private SpinSimulationData _pickabilityTestSimData;
-        private Random _spinPicker;
-        private int _spinPickerSeed;
 
-        private const string RANDOM_SEED_SAVE_KEY = "slotMachine_spin_random_seed";
-        private const string LAST_SESSION_SPIN_NUMBER_SAVE_KEY = "slotMachine_last_session_spin_number";
+        protected SpinSimulationData MainSimData;
+        protected Random SpinPicker;
+        protected int SpinPickerSeed;
 
-        private void Awake()
+        public SlotMachineController(SlotMachineSettings slotMachineSettings)
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(this);
-                return;
-            }
-
-            Instance = this;
-
-            Init();
-
-            IsReady = true;
+            _slotMachineSettings = slotMachineSettings;
         }
 
-        private void Init()
+        public virtual void Init()
         {
-            _spinPickerSeed = PlayerPrefs.GetInt(RANDOM_SEED_SAVE_KEY, Environment.TickCount);
-            _spinPicker = new Random(_spinPickerSeed);
             InitPeriodicData();
-            ProcessInitialSimulationData();
         }
 
         private void InitPeriodicData()
         {
-            _mainSimData = new SpinSimulationData();
+            MainSimData = new SpinSimulationData();
             _pickabilityTestSimData = new SpinSimulationData();
-            foreach (var outcomeInfo in slotMachineSettings.spinOutcomes)
+            foreach (var outcomeInfo in _slotMachineSettings.spinOutcomes)
             {
-                _mainSimData.PeriodicOutcomeDataList.Add(new PeriodicSpinOutcomeData(outcomeInfo));
+                MainSimData.PeriodicOutcomeDataList.Add(new PeriodicSpinOutcomeData(outcomeInfo));
                 _pickabilityTestSimData.PeriodicOutcomeDataList.Add(new PeriodicSpinOutcomeData(outcomeInfo));
             }
 
-            _mainSimData.FetchNewArrivals();
-        }
-
-        private void ProcessInitialSimulationData()
-        {
-            var lastSessionSpinNumber = PlayerPrefs.GetInt(LAST_SESSION_SPIN_NUMBER_SAVE_KEY, 0);
-            for (int i = 0; i < lastSessionSpinNumber; i++)
-            {
-                GetNextSpin(false);
-            }
+            MainSimData.FetchNewArrivals();
         }
 
         public SpinOutcomeInfo GetNextSpin(bool triggerSave)
         {
             int pickedIndex = GetRandomSpinIndex();
-            var spinResult = _mainSimData.ActiveWaitingSpinInfos[pickedIndex].Data;
-            ProcessPickedSpin(_mainSimData, pickedIndex);
+            var spinResult = MainSimData.ActiveWaitingSpinInfos[pickedIndex].Data;
+            ProcessPickedSpin(MainSimData, pickedIndex);
 
-            if (_mainSimData.CurrentSpinNumber == 0)
+            if (MainSimData.CurrentSpinNumber == 0)
             {
-                _spinPickerSeed = Environment.TickCount;
+                SpinPickerSeed = Environment.TickCount;
             }
 
             if(triggerSave)
@@ -95,7 +67,7 @@ namespace ICouldGames.SlotMachine.Controller
 
         private int GetRandomSpinIndex()
         {
-            int lastPickableIndex = _mainSimData.ActiveWaitingSpinInfos.Count - 1;
+            int lastPickableIndex = MainSimData.ActiveWaitingSpinInfos.Count - 1;
             while (lastPickableIndex >= 0)
             {
                 if (IsSpinPickable(lastPickableIndex))
@@ -105,12 +77,12 @@ namespace ICouldGames.SlotMachine.Controller
                 lastPickableIndex--;
             }
 
-            return _spinPicker.Next(0, lastPickableIndex + 1);
+            return SpinPicker.Next(0, lastPickableIndex + 1);
         }
 
         private bool IsSpinPickable(int spinIndex)
         {
-            _pickabilityTestSimData.Copy(_mainSimData);
+            _pickabilityTestSimData.Copy(MainSimData);
             ProcessPickedSpin(_pickabilityTestSimData, spinIndex);
             if (_pickabilityTestSimData.IsAnyDeadlineFailed())
             {
@@ -156,11 +128,6 @@ namespace ICouldGames.SlotMachine.Controller
             }
         }
 
-        public void Save()
-        {
-            PlayerPrefs.SetInt(RANDOM_SEED_SAVE_KEY, _spinPickerSeed);
-            PlayerPrefs.SetInt(LAST_SESSION_SPIN_NUMBER_SAVE_KEY, _mainSimData.CurrentSpinNumber);
-            PlayerPrefs.Save();
-        }
+        protected abstract void Save();
     }
 }

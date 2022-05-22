@@ -1,12 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using ICouldGames.Dependency.Singly;
 using ICouldGames.Extensions.System.Collections.Generic;
 using ICouldGames.SlotMachine.Controller;
-using ICouldGames.SlotMachine.Spin.Item;
 using ICouldGames.SlotMachine.Spin.Outcome.Info;
 using ICouldGames.SlotMachine.View.Column;
 using ICouldGames.SlotMachine.View.Column.Settings;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace ICouldGames.SlotMachine.View
 {
@@ -28,24 +30,23 @@ namespace ICouldGames.SlotMachine.View
         [Range(0.05f, 10f)]
         [SerializeField] private float[] criticalLastSpinStopDurations;
 
-        private IEnumerator Start()
-        {
-            yield return new WaitUntil(IsDependenciesReady);
+        private SlotMachineController _slotMachineController;
 
-            spinButton.onClick.AddListener(() => StartCoroutine(Spin()));
+        private void Awake()
+        {
+            _slotMachineController = SingletonProvider.Instance.Get<SlotMachineController>();
         }
 
-        private bool IsDependenciesReady()
+        private void Start()
         {
-            return SlotMachineController.Instance.IsReady
-                   && SpinItemImageProvider.Instance.IsReady;
+            spinButton.onClick.AddListener(() => StartCoroutine(Spin()));
         }
 
         private IEnumerator Spin()
         {
             spinButton.interactable = false;
 
-            var spinOutcome = SlotMachineController.Instance.GetNextSpin(true);
+            var spinOutcome = _slotMachineController.GetNextSpin(true);
             spinOutcome.SpinItemTypes.Shuffle();
 
             yield return StartCoroutine(column1.Spin(GenerateSpinSettings(spinOutcome, 0)));

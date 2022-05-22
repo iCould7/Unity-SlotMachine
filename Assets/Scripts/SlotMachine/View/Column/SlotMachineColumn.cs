@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ICouldGames.Dependency.Singly;
 using ICouldGames.SlotMachine.Controller;
 using ICouldGames.SlotMachine.Spin.Item;
 using ICouldGames.SlotMachine.View.Column.Settings;
@@ -25,10 +26,15 @@ namespace ICouldGames.SlotMachine.View.Column
         private int _resultOffsetFromMid = 0;
         private int _nextSpawnOffsetFromMid = 0;
         private ColumnSpinSettings _spinSettings;
+        private SpinItemImageProvider _spinItemImageProvider;
 
-        private IEnumerator Start()
+        private void Awake()
         {
-            yield return new WaitUntil(IsDependenciesReady);
+            _spinItemImageProvider = SingletonProvider.Instance.Get<SpinItemImageProvider>();
+        }
+
+        private void Start()
+        {
             FillInitialActiveSpinItems();
         }
 
@@ -181,8 +187,8 @@ namespace ICouldGames.SlotMachine.View.Column
                     {
                         if (_resultOffsetFromMid == _nextSpawnOffsetFromMid)
                         {
-                            spawnItem.Init(SpinItemImageProvider.Instance.GetBlurredImage(_spinSettings.ResultItemType),
-                                SpinItemImageProvider.Instance.GetCleanImage(_spinSettings.ResultItemType));
+                            spawnItem.Init(_spinItemImageProvider.GetBlurredImage(_spinSettings.ResultItemType),
+                                _spinItemImageProvider.GetCleanImage(_spinSettings.ResultItemType));
                         }
                         _nextSpawnOffsetFromMid++;
                     }
@@ -215,8 +221,8 @@ namespace ICouldGames.SlotMachine.View.Column
                 var midOffset = CalculateMidOffset(spinItem, itemSpacingVector);
                 if (midOffset == _resultOffsetFromMid)
                 {
-                    spinItem.Init(SpinItemImageProvider.Instance.GetBlurredImage(_spinSettings.ResultItemType),
-                        SpinItemImageProvider.Instance.GetCleanImage(_spinSettings.ResultItemType));
+                    spinItem.Init(_spinItemImageProvider.GetBlurredImage(_spinSettings.ResultItemType),
+                        _spinItemImageProvider.GetCleanImage(_spinSettings.ResultItemType));
                 }
 
                 if (midOffset >= 0)
@@ -261,12 +267,6 @@ namespace ICouldGames.SlotMachine.View.Column
             _secondTweenEnded = false;
             _resultOffsetFromMid = 0;
             _nextSpawnOffsetFromMid = 0;
-        }
-
-        private bool IsDependenciesReady()
-        {
-            return SlotMachineController.Instance.IsReady
-                   && SpinItemImageProvider.Instance.IsReady;
         }
     }
 }
