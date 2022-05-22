@@ -49,7 +49,7 @@ namespace ICouldGames.SlotMachine.Controller
             var periodicData = MainSimData.PeriodicOutcomeDataList.First(x => x.SpinOutcomeInfo.Id == spinResult.Id);
             var pickedSpinData = new PickedSpinData(spinResult);
             pickedSpinData.ArrivalTime = MainSimData.CurrentSpinNumber;
-            pickedSpinData.ExpectedArrivalInterval = (periodicData.currentDeadline - periodicData.currentPeriod, periodicData.currentDeadline - 1);
+            pickedSpinData.ExpectedArrivalInterval = (periodicData.CurrentDeadline - periodicData.CurrentPeriod, periodicData.CurrentDeadline - 1);
             periodicData.LastPickedSpinData = pickedSpinData;
 
             ProcessPickedSpin(MainSimData, pickedIndex);

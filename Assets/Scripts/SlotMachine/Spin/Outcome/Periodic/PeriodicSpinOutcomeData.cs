@@ -15,8 +15,8 @@ namespace ICouldGames.SlotMachine.Spin.Outcome.Periodic
 
         public PickedSpinData LastPickedSpinData;
         public SpinOutcomeInfo SpinOutcomeInfo { get; private set; }
-        public int currentDeadline => _currentDeadline;
-        public int currentPeriod => _currentPeriod;
+        public int CurrentDeadline => _currentDeadline;
+        public int CurrentPeriod => _currentPeriod;
 
         public PeriodicSpinOutcomeData(SpinOutcomeInfo outcomeInfo)
         {
